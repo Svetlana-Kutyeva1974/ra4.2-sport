@@ -2,18 +2,18 @@ import React from 'react'
 
 export default function TableItem(props) {
   const {name, way, date} = props.form;
-  //const {item} = props;
   console.log('prop ---', props.form, '\n name--', name);
   
-
   return (
+    <>
     <div className="card_list">
-      <h3 className="card_title">{name}</h3>
-      <div className="card_description">{way}</div>
-      <div className="card_price">${date}</div>
-      <div className='card_button'>
-        <button className="button2">ADD TO CART</button>
+      <div className='card_item'>
+        <div className="card_description">{date}</div>
+        <div className="card_price">{way}</div>
+          <button className="button2">&#9998;</button>
+          <button className="button2">&#10008;</button>
       </div>
     </div>
+    </>
   )
 }

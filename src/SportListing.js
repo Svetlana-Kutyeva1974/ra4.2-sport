@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
 import TableItem from './TableItem';
+import shortid from 'shortid';
 //import PropTypes from 'prop-types'
 // import ListItem from './ListItem';
+let forms =[];
+let list =[];
+let formIndex =[];
 
 export default function SportListing(props) {
   //const {items} = props;
   // console.log("перед отрисовкой", items);
-  let forms =[];
+
+  /*let forms =[];
+  let list =[];
+  let formIndex =[];
+  */
+
+ // let todoItems =[];
   const [form, setForm] = useState({
     name: '',
     date: '',
@@ -29,21 +39,25 @@ export default function SportListing(props) {
 
   const handleSubmit = evt => {
     evt.preventDefault();
+
     console.log('tip', evt.type);
     console.log('target', evt.target, evt.currentTarget);
+
     setForm(prevForm => ({...prevForm, button: 'OK'}));
     console.log("stateform  new", form);
+
     forms.push(form);
-    console.log("arrayform  new", forms);
+    formIndex = forms.map((form) =>({id: shortid.generate(), value: form }));
+    list = formIndex.map((formelement) =><li key={formelement.id}>{<TableItem form={formelement.value}/>}</li>);
+    //todoItems = forms.map((item) => {<TableItem form={item}/>});
+    console.log("arrayform  по нажатии", forms, formIndex, list);
+    //console.log("array todoItem\n", todoItems);
     }
-  
-   
-  const todoItems = forms.map((item) => <li>{<TableItem form={item}/>}</li>);
   
 
   return (
     <>
-    <form onSubmit={handleSubmit}>
+    <form className='form_flex' onSubmit={handleSubmit}>
       <div className='body_form'>
         <div className='input_form'>
           <label htmlFor="date">Дата (ДД.ММ.ГГ)</label>
@@ -54,20 +68,26 @@ export default function SportListing(props) {
           <input id="way" name="way" value={form.way} onChange={handleChange} />
         </div>
         <div className='input_form'>
-        <span>кнопка</span>
-        <button type="submit">OK</button>
+        <span className='span_button'>кнопка</span>
+        <button className='button' type="submit">OK</button>
         </div>
       </div>
-    </form>
-    {form.button==='OK' && <TableItem form={form}/>}
-    
-    <div>
-      <h2>Список дел:</h2>
-      <ul>{todoItems}
+      <div>
+      <h3 className="card_title">
+        <span className='span_title'>Дата (ДД.ММ.ГГ</span>
+        <span className='span_title'>Пройдено км</span>
+        <span className='span_title'>Действия</span>
+      </h3>
+      <ul>{list}
       </ul>
     </div>
+      
+     
 
+    </form>
     </>
+    //  {form.button==='OK' && <TableItem form={form}/>}
+
     /*<div className='item-list'>
       {items.map((item) => {
         return <ListItem item={item} key={item.listing_id} /> 
