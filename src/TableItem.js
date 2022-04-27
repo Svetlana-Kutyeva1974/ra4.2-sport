@@ -3,15 +3,18 @@ import React from 'react'
 export default function TableItem(props) {
   const {name, way, date} = props.form;
   console.log('prop ---', props.form, '\n name--', name);
-  
+  /*const handleClick = evt => {
+    console.log('evt что удалить', evt, evt.target);
+    };
+  */
   return (
     <>
     <div className="card_list">
       <div className='card_item'>
-        <div className="card_description">{date}</div>
-        <div className="card_price">{way}</div>
+        <div className="card_date">{date}</div>
+        <div className="card_way">{way}</div>
           <button className="button2">&#9998;</button>
-          <button className="button2">&#10008;</button>
+          <button className="button3" onClick={(evt, id) => props.delete(evt, id)}>&#10008;</button>
       </div>
     </div>
     </>

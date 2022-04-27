@@ -2,57 +2,83 @@ import React, { useState } from 'react';
 import TableItem from './TableItem';
 import shortid from 'shortid';
 //import PropTypes from 'prop-types'
-// import ListItem from './ListItem';
+
 let forms =[];
 let list =[];
 let formIndex =[];
+const clearForm = {
+  name: '',
+  date: '',
+  way: '',
+  button: ''
+}
 
-export default function SportListing(props) {
-  //const {items} = props;
-  // console.log("перед отрисовкой", items);
-
-  /*let forms =[];
-  let list =[];
-  let formIndex =[];
-  */
-
- // let todoItems =[];
-  const [form, setForm] = useState({
-    name: '',
-    date: '',
-    way: '',
-    button: ''
-    });
-    console.log("stateform  before", form);
+export default function SportListing() {
+  const [form, setForm] = useState(clearForm);
+  console.log("stateform  before", form);
+  
+  const [lists, setLists] = useState([]);
+  const [arrayForms, setArrayForms] = useState(forms);
+  console.log("stateform  before", arrayForms);
   /*const handleNameChange = evt => {
     setForm(prevForm => ({...prevForm, date: evt.target.value}));
     }
 */
   const handleChange = (evt) => {
-     // const name = target.name;
-     console.log("stateform  before set", form);
       const value = evt.target.value;
       const name = evt.target.name;
       setForm(prevForm => ({...prevForm, [name]: value, name: name}));
       console.log("stateform  new", form);
-    }
+  }
 
   const handleSubmit = evt => {
     evt.preventDefault();
 
     console.log('tip', evt.type);
-    console.log('target', evt.target, evt.currentTarget);
+    console.log('target', evt.target);
 
     setForm(prevForm => ({...prevForm, button: 'OK'}));
     console.log("stateform  new", form);
 
     forms.push(form);
-    formIndex = forms.map((form) =>({id: shortid.generate(), value: form }));
-    list = formIndex.map((formelement) =><li key={formelement.id}>{<TableItem form={formelement.value}/>}</li>);
-    //todoItems = forms.map((item) => {<TableItem form={item}/>});
-    console.log("arrayform  по нажатии", forms, formIndex, list);
-    //console.log("array todoItem\n", todoItems);
-    }
+    setArrayForms(forms);
+    console.log("!!! arrayForms\n", arrayForms);
+    formIndex = arrayForms.map((form) =>({id: shortid.generate(), value: form }));
+    //formIndex = forms.map((form) =>({id: shortid.generate(), value: form }));
+    //list = formIndex.map((formelement) =><li key={formelement.id}>{<TableItem form={formelement.value} delete={handleDelete}/>}</li>);
+    list = formIndex.map(formelement => <li key={formelement.id}>
+      {<TableItem form={formelement.value} id={formelement.id} delete={() => handleDelete(evt, formelement.id)}/>}</li>);
+    // setLists([...list]);// setLists(prevLists => ([...prevLists, list]));//setLists(prevLists => [...list]);
+
+    setLists(() => [...list]);
+    console.log("arrayform  по нажатии", forms, formIndex, list, lists);
+    setForm(clearForm);
+  }
+
+  const handleDelete = (evt, id)=> {
+    console.log("delete   id\n", id, evt);
+    list = formIndex.filter(item=>item.id!==id);
+
+    // найти и удалить форму в forms? по id из formindex
+    const element = formIndex.find(item=>item.id===id);
+    console.log("delete  element forms\n", element, element.value);
+    let forms2 = [];
+    forms2 = forms.filter((form)=> form!==element.value);
+    forms = forms2;
+    
+    console.log("после delete  forms\n", forms);
+    //setArrayForms(() => [...forms]);
+    setArrayForms(forms);
+    console.log("after delete forms arrayForms\n", arrayForms);
+    // и для formindex
+    let formIndex1 = [];
+    formIndex1 = formIndex.filter((form)=> form!==element);
+    formIndex = formIndex1;
+
+    setForm(clearForm);
+    setLists(() => [...list]);
+    console.log("после delete  cpisok\n", list, lists);
+  }
   
 
   return (
@@ -72,19 +98,18 @@ export default function SportListing(props) {
         <button className='button' type="submit">OK</button>
         </div>
       </div>
-      <div>
+      
+    </form>
+    <div className='list_sport'>
       <h3 className="card_title">
-        <span className='span_title'>Дата (ДД.ММ.ГГ</span>
+        <span className='span_title'>Дата (ДД.ММ.ГГ)</span>
         <span className='span_title'>Пройдено км</span>
         <span className='span_title'>Действия</span>
       </h3>
-      <ul>{list}
+      <ul className='border_ul'>{lists}
       </ul>
     </div>
-      
-     
 
-    </form>
     </>
     //  {form.button==='OK' && <TableItem form={form}/>}
 
