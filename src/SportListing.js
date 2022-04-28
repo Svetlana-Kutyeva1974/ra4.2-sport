@@ -14,49 +14,39 @@ const clearForm = {
 }
 
 export default function SportListing() {
-  const [form, setForm] = useState(clearForm);
+  const [form, setForm] = useState(clearForm);//данные формы
   console.log("stateform  before", form);
   
-  const [lists, setLists] = useState([]);
-  const [arrayForms, setArrayForms] = useState(forms);
-  console.log("stateform  before", arrayForms);
-  /*const handleNameChange = evt => {
-    setForm(prevForm => ({...prevForm, date: evt.target.value}));
-    }
-*/
+  const [lists, setLists] = useState([]); //список сохраненных форм по нажатии ок с ключами сгенерир
+
   const handleChange = (evt) => {
       const value = evt.target.value;
       const name = evt.target.name;
       setForm(prevForm => ({...prevForm, [name]: value, name: name}));
-      console.log("stateform  new", form);
+      console.log("stateform  new in change", form);
   }
 
   const handleSubmit = evt => {
     evt.preventDefault();
-
-    console.log('tip', evt.type);
-    console.log('target', evt.target);
-
-    setForm(prevForm => ({...prevForm, button: 'OK'}));
-    console.log("stateform  new", form);
+    //console.log('tip', evt.type);
+    //console.log('target', evt.target, evt.target.name, evt.target.value);
+    setForm(prevForm => ({...prevForm, form}));
+    console.log("stateform  new in submit ok", form);
 
     forms.push(form);
-    setArrayForms(forms);
-    console.log("!!! arrayForms\n", arrayForms);
-    formIndex = arrayForms.map((form) =>({id: shortid.generate(), value: form }));
-    //formIndex = forms.map((form) =>({id: shortid.generate(), value: form }));
-    //list = formIndex.map((formelement) =><li key={formelement.id}>{<TableItem form={formelement.value} delete={handleDelete}/>}</li>);
-    list = formIndex.map(formelement => <li key={formelement.id}>
-      {<TableItem form={formelement.value} id={formelement.id} delete={() => handleDelete(evt, formelement.id)}/>}</li>);
-    // setLists([...list]);// setLists(prevLists => ([...prevLists, list]));//setLists(prevLists => [...list]);
+    formIndex = forms.map((form) =>({id: shortid.generate(), value: form }));
+    list = formIndex.map(formelement =>
+      <li key={formelement.id}>
+        {<TableItem form={formelement.value} id={formelement.id} delete={() => handleDelete(formelement.id)}/>}
+      </li>);
 
-    setLists(() => [...list]);
-    console.log("arrayform  по нажатии", forms, formIndex, list, lists);
+    setLists(list);
+    console.log("arrayform  по нажатии ok", forms, formIndex, list, lists);
     setForm(clearForm);
   }
 
-  const handleDelete = (evt, id)=> {
-    console.log("delete   id\n", id, evt);
+  const handleDelete = (id)=> {
+    console.log("delete   id\n", id);
     list = formIndex.filter(item=>item.id!==id);
 
     // найти и удалить форму в forms? по id из formindex
@@ -65,18 +55,13 @@ export default function SportListing() {
     let forms2 = [];
     forms2 = forms.filter((form)=> form!==element.value);
     forms = forms2;
-    
     console.log("после delete  forms\n", forms);
-    //setArrayForms(() => [...forms]);
-    setArrayForms(forms);
-    console.log("after delete forms arrayForms\n", arrayForms);
-    // и для formindex
     let formIndex1 = [];
     formIndex1 = formIndex.filter((form)=> form!==element);
     formIndex = formIndex1;
 
     setForm(clearForm);
-    setLists(() => [...list]);
+    setLists(list);
     console.log("после delete  cpisok\n", list, lists);
   }
   
@@ -106,12 +91,12 @@ export default function SportListing() {
         <span className='span_title'>Пройдено км</span>
         <span className='span_title'>Действия</span>
       </h3>
-      <ul className='border_ul'>{lists}
+      <ul className='border_ul'>
+        {lists}
       </ul>
     </div>
 
     </>
-    //  {form.button==='OK' && <TableItem form={form}/>}
 
     /*<div className='item-list'>
       {items.map((item) => {
