@@ -47,8 +47,12 @@ export default function SportListing() {
 
   const handleDelete = (id)=> {
     console.log("delete   id\n", id);
-    list = formIndex.filter(item=>item.id!==id);
-
+    const list2 = formIndex.filter(item=>item.id!==id);
+    list = list2.map(formelement =>
+      <li key={formelement.id}>
+        {<TableItem form={formelement.value} id={formelement.id} delete={() => handleDelete(formelement.id)}/>}
+      </li>);
+      
     // найти и удалить форму в forms? по id из formindex
     const element = formIndex.find(item=>item.id===id);
     console.log("delete  element forms\n", element, element.value);
