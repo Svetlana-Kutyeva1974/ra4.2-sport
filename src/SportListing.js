@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import TableItem from './TableItem';
 import shortid from 'shortid';
-//import PropTypes from 'prop-types'
 
 let forms =[];
 let list =[];
@@ -10,12 +9,10 @@ const clearForm = {
   name: '',
   date: '',
   way: '',
-  button: ''
 }
 
 export default function SportListing() {
   const [form, setForm] = useState(clearForm);//данные формы
-  console.log("stateform  before", form);
   
   const [lists, setLists] = useState([]); //список сохраненных форм по нажатии ок с ключами сгенерир
 
@@ -23,53 +20,67 @@ export default function SportListing() {
       const value = evt.target.value;
       const name = evt.target.name;
       setForm(prevForm => ({...prevForm, [name]: value, name: name}));
-      console.log("stateform  new in change", form);
   }
 
   const handleSubmit = evt => {
     evt.preventDefault();
-    //console.log('tip', evt.type);
-    //console.log('target', evt.target, evt.target.name, evt.target.value);
-    setForm(prevForm => ({...prevForm, form}));
-    console.log("stateform  new in submit ok", form);
+    //console.log('target', evt.target, evt.type, evt.target.name, evt.target.value);
+    if(form.date.match(/^([0]?[1-9]|[1|2][0-9]|[3][0|1])[.]([0]?[1-9]|[1][0-2])[.]([0-9]{2})$/)
+     && form.date !==''
+     && (form.date.length ===10 || form.date.length ===8)) {
 
-    forms.push(form);
-    formIndex = forms.map((form) =>({id: shortid.generate(), value: form }));
+    const existDate = formIndex.findIndex((item) => item.value.date === form.date);
+    if (existDate !== -1) {// сумирование
+      formIndex[existDate].value.way = Number(formIndex[existDate].value.way) + Number(form.way);
+    } else { //добавление
+      setForm(prevForm => ({...prevForm, form}));
+
+      forms.push(form);
+      formIndex = forms.map((form) =>({id: shortid.generate(), value: form }));
+      console.log("массив при добавлении по нажатии ok", formIndex);
+
+      //2 sortirovka sort не создает новый массив, а работает с исходным
+      formIndex.sort((a,b) => new Date(b.value.date) - new Date(a.value.date)); //console.log("массив сортировки", formIndex);
+    }
+
+    // для отрисовки
     list = formIndex.map(formelement =>
       <li key={formelement.id}>
         {<TableItem form={formelement.value} id={formelement.id} delete={() => handleDelete(formelement.id)}/>}
       </li>);
 
-    setLists(list);
-    console.log("arrayform  по нажатии ok", forms, formIndex, list, lists);
+    setLists(list);//console.log("массив form  по нажатии ok", forms, formIndex, list, lists);
     setForm(clearForm);
+    }
   }
 
   const handleDelete = (id)=> {
-    console.log("delete   id\n", id);
-    const list2 = formIndex.filter(item=>item.id!==id);
+    let list2 = formIndex.filter(item=>item.id!==id);
+
+     //2 sortirovka
+    list2.sort((a,b) => {
+      return new Date(b.value.date) - new Date(a.value.date);
+    });
+  
     list = list2.map(formelement =>
       <li key={formelement.id}>
         {<TableItem form={formelement.value} id={formelement.id} delete={() => handleDelete(formelement.id)}/>}
       </li>);
       
     // найти и удалить форму в forms? по id из formindex
-    const element = formIndex.find(item=>item.id===id);
-    console.log("delete  element forms\n", element, element.value);
+    const element = formIndex.find(item=>item.id===id);//console.log("delete  element forms\n", element, element.value);
     let forms2 = [];
     forms2 = forms.filter((form)=> form!==element.value);
     forms = forms2;
-    console.log("после delete  forms\n", forms);
+    //console.log("после delete  forms\n", forms);
     let formIndex1 = [];
     formIndex1 = formIndex.filter((form)=> form!==element);
     formIndex = formIndex1;
 
     setForm(clearForm);
-    setLists(list);
-    console.log("после delete  cpisok\n", list, lists);
+    setLists(list); //console.log("после delete  список\n", list, lists);
   }
   
-
   return (
     <>
     <form className='form_flex' onSubmit={handleSubmit}>
@@ -99,23 +110,6 @@ export default function SportListing() {
         {lists}
       </ul>
     </div>
-
     </>
-
-    /*<div className='item-list'>
-      {items.map((item) => {
-        return <ListItem item={item} key={item.listing_id} /> 
-      })}
-    </div>
-    */
   );
 }
-/*
-Listing.defaultProps = {
-  items: []
-}
-
-Listing.propTypes = {
-  items: PropTypes.array.isRequired
-}
-*/
