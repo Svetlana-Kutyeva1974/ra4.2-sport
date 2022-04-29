@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/ra4.2-sport/static/css/main.f5a692aa.css",
+    "main.js": "/ra4.2-sport/static/js/main.29c29979.js",
+    "index.html": "/ra4.2-sport/index.html",
+    "main.f5a692aa.css.map": "/ra4.2-sport/static/css/main.f5a692aa.css.map",
+    "main.29c29979.js.map": "/ra4.2-sport/static/js/main.29c29979.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f5a692aa.css",
+    "static/js/main.29c29979.js"
+  ]
+}
